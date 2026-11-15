@@ -1,0 +1,98 @@
+{
+  "_comment": "Sourced from https://hh-specs.handhistory.org/ (spec_version 1.4.9, fetched 2026-11-04). Exact strings and descriptions, not paraphrased. See ",
+  "game_type": {
+    "values": {
+      "Holdem": "Texas hold'em",
+      "Omaha": "Omaha",
+      "OmahaHiLo": "Omaha hi/lo",
+      "Stud": "Seven card stud",
+      "StudHiLo": "Seven card stud hi/lo",
+      "Draw": "Draw poker"
+    }
+  },
+  "bet_type": {
+    "values": {
+      "NL": "No Limit",
+      "PL": "Pot Limit",
+      "FL": "Fixed Limit"
+    }
+  },
+  "street": {
+    "values": {
+      "Preflop": "Before any community cards are dealt",
+      "Flop": "After the first three community cards",
+      "Turn": "After the fourth community card",
+      "River": "After the fifth community card",
+      "Showdown": "Cards are shown to determine the winner"
+    },
+    "notes": "Not unique within a hand's rounds array: a run-it-twice hand has two Flop rounds (etc.) sharing the same street name. round_obj.id gives the real order, not array position or street name."
+  },
+  "action": {
+    "values": {
+      "Dealt Cards": "Cards were dealt to a player (hole cards)",
+      "Mucks Cards": "A player mucked (did not show) their cards",
+      "Shows Cards": "A player showed their cards, typically at showdown",
+      "Post Ante": "A player posted an ante",
+      "Post SB": "A player posted the small blind",
+      "Post BB": "A player posted the big blind",
+      "Straddle": "A player posted a straddle",
+      "Post Dead": "A player posted a dead blind",
+      "Post Extra Blind": "A player posted an extra blind",
+      "Fold": "A player folded",
+      "Check": "A player checked",
+      "Bet": "A player bet. Not valid preflop, per the spec's own note.",
+      "Raise": "A player raised",
+      "Call": "A player called",
+      "Added Chips": "A player added chips to their stack (cash game top-up)",
+      "Sits Down": "A player sat down at the table",
+      "Stands Up": "A player stood up from the table",
+      "Add to Pot": "Chips added to the pot not tied to a specific player; player_id may be omitted or null for this action",
+      "Player Adjustment": "A manual adjustment to a player's stack; amount may be negative"
+    },
+    "notes": "The spec warns 'Bet' is not a valid preflop action (players Check or Raise instead, since there is already a live bet from the blinds)."
+  },
+  "currency": {
+    "format": "ISO 4217 three-letter code, plus OHH-specific non-ISO extensions for play money / site coin",
+    "known_non_iso_extensions": {
+      "XPM": "Play money",
+      "XSC": "PokerStars coin"
+    },
+    "notes": "The spec's own examples (XPM, XSC) are not real ISO 4217 codes. A validator must allow known extensions in addition to the real ISO 4217 list, not just the ISO list alone."
+  },
+  "hand_flags": {
+    "values": {
+      "Run_It_Twice": "Two or more sets of board cards are used in the play of the same hand (also used for three-or-more-times run-it)",
+      "Anonymous": "The players at the table are all anonymous and have no specified name/ID for historical records",
+      "Observed": "The hand was observed and the hero was not dealt into the hand",
+      "Fast": "Fast poker game: any fast-fold variant where folding immediately moves you to the next hand",
+      "Cap": "A game that limits the amount each player can wager per hand",
+      "Bomb_Pot": "A hand with extra money in the pot that goes directly to the flop with no preflop action"
+    },
+    "nullable": true,
+    "notes": "Array field on the hand object. Can be omitted, null, or an empty array if there are no flags."
+  },
+  "tournament_flags": {
+    "values": {
+      "SNG": "Sit 'N Go",
+      "DON": "Double or nothing: half the players win double their buy-in, half win nothing",
+      "Bounty": "Players are awarded prizes for knocking out specific players",
+      "Shootout": "Multi-table tournament played in stages; each table plays to one remaining player, winners advance",
+      "Rebuy": "Players may rebuy stacks of chips (various forms/timing/limits); rebuy-only-on-felt tournaments should use Re-Entry instead",
+      "Matrix": "One buy-in split between multiple games; prize pool partly per-game, partly on aggregate placing",
+      "Push_Or_Fold": "Every hand requires fold or push all-in",
+      "Satellite": "Prize includes entry into another tournament",
+      "Steps": "Steps tournament: players incrementally gain seats to additional, greater-value tournaments",
+      "Deep": "Deep stack tournament: starting stacks are more big blinds than a normal starting stack",
+      "Multi-Entry": "Players can have more than one entry into the same tournament, not synonymous with Rebuy",
+      "Fifty50": "Fifty percent of players win a prize; all winners get a base prize plus an amount based on remaining chips when half the field is eliminated",
+      "Flipout": "Players' hands are all played face up without betting rounds",
+      "TripleUp": "A third of the players win three times their buy-in, the rest win nothing",
+      "Lottery": "Fast action games with accelerated blind timings and shorter stacks; prize is randomly chosen before the game begins",
+      "Re-Entry": "A player can re-enter a tournament after being felted",
+      "Power_Up": "Three-person game with special 'powers' not typically possible in table games",
+      "Progressive-Bounty": "Like Bounty, but bounty winning amounts can vary, usually half to the hand winner and half added to the winner's own bounty"
+    },
+    "nullable": true,
+    "notes": "Array field on tournament_info_obj. Can be omitted, null, or an empty array if there are no flags."
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "_comment": "Nested object schemas referenced from fields.json's \"ref\". Sourced from https://hh-specs.handhistory.org/ per-object pages (spec_version 1.4.9, fetched 2026-11-04). Same global requiredness rule as fields.json: required unless a stated exception appears in notes. Not cross-checked against a second implementation, see ",
+  "objects": {
+    "player_obj": {
+      "doc": "One of the players seated at the table when the hand was dealt.",
+      "fields": {
+        "id": { "type": "integer", "required": true, "doc": "This player's id, referenced by player_id elsewhere in the hand (e.g. hero_player_id, action_obj.player_id, dealer_seat is a seat number, not this id)." },
+        "seat": { "type": "integer", "required": true, "doc": "The seat number this player occupied." },
+        "name": { "type": "string", "required": true, "doc": "The player's display name." },
+        "display": { "type": "string", "required": false, "doc": "An alternate display name. Not present in the only example fetched so far; requiredness unconfirmed." },
+        "starting_stack": { "type": "decimal", "required": true, "doc": "The player's stack size at the start of the hand." },
+        "player_bounty": { "type": "decimal", "required": true, "doc": "The player's bounty value, for bounty tournaments (0 otherwise)." },
+        "is_sitting_out": { "type": "boolean", "required": false, "doc": "Whether the player was sitting out. Not present in the only example fetched so far; requiredness unconfirmed." }
+      }
+    },
+    "round_obj": {
+      "doc": "One betting round (street) of the hand.",
+      "fields": {
+        "id": { "type": "integer", "required": true, "doc": "The round's order within the hand. Authoritative for ordering, street names are not unique (run-it-twice hands repeat a street name across two rounds)." },
+        "street": { "type": "string", "enum": "street", "required": true, "doc": "The street this round represents. See registry enums.json#street." },
+        "cards": { "type": "array", "items": "string", "format": "card_string", "required": false, "doc": "Community cards dealt on this round. The one example fetched shows this present-but-empty ([]) on Preflop and absent entirely on Showdown, both appear valid; requiredness/nullability is not explicitly stated and should be treated as 'present when cards exist for this street, may be omitted otherwise' pending a second example." },
+        "actions": { "type": "array", "items": "object", "ref": "action_obj", "required": true, "doc": "The actions taken during this round, in order." }
+      }
+    },
+    "action_obj": {
+      "doc": "One action taken during a round.",
+      "fields": {
+        "action_number": { "type": "integer", "required": true, "doc": "The action's order, scoped to its round (resets each round, per the example: round 4/Showdown restarts at 1)." },
+        "player_id": { "type": "integer", "required": false, "doc": "The player who took this action. Explicitly nullable/omittable when the action is not related to a specific player (stated exception: the 'Add to Pot' action)." },
+        "action": { "type": "string", "enum": "action", "required": true, "doc": "The action taken. See registry enums.json#action." },
+        "description": { "type": "string", "required": false, "doc": "A free-text description of the action. Not present in the only example fetched so far; requiredness unconfirmed." },
+        "amount": { "type": "decimal", "required": true, "doc": "The amount associated with this action (0 for actions with no amount, e.g. Fold/Check). Can be negative for 'Player Adjustment'." },
+        "is_allin": { "type": "boolean", "required": true, "doc": "Whether this action put the player all-in." },
+        "cards": { "type": "array", "items": "string", "format": "card_string", "required": false, "doc": "Cards revealed by this action. Present only on card-revealing actions (Dealt Cards, Shows Cards) in the example fetched; absent on others." }
+      }
+    },
+    "pot_obj": {
+      "doc": "One pot awarded at the end of the hand.",
+      "fields": {
+        "number": { "type": "integer", "required": true, "doc": "This pot's index (0 for the main pot, 1+ for side pots)." },
+        "amount": { "type": "decimal", "required": true, "doc": "The total amount in this pot." },
+        "rake": { "type": "decimal", "required": true, "doc": "The rake taken from this pot." },
+        "jackpot": { "type": "decimal", "required": false, "doc": "Any jackpot contribution taken from this pot. Not present in the only example fetched so far; requiredness unconfirmed." },
+        "player_wins": { "type": "array", "items": "object", "ref": "player_wins_obj", "required": true, "doc": "The players who won (a share of) this pot." }
+      }
+    },
+    "player_wins_obj": {
+      "doc": "One player's win from a pot.",
+      "fields": {
+        "player_id": { "type": "integer", "required": true, "doc": "The winning player's id." },
+        "win_amount": { "type": "decimal", "required": true, "doc": "The amount this player won from the pot." },
+        "cashout_amount": { "type": "decimal", "required": true, "doc": "The amount cashed out, if the site supports early cashout." },
+        "cashout_fee": { "type": "decimal", "required": true, "doc": "The fee taken for an early cashout." },
+        "bonus_amount": { "type": "decimal", "required": false, "doc": "Any bonus amount awarded. Not present in the only example fetched so far; requiredness unconfirmed." },
+        "contributed_rake": { "type": "decimal", "required": false, "doc": "This player's share of the rake taken. Not present in the only example fetched so far; requiredness unconfirmed." }
+      }
+    },
+    "tournament_info_obj": {
+      "doc": "Tournament metadata, present when the hand's tournament field is true.",
+      "fields": {
+        "tournament_number": { "type": "string", "required": true, "doc": "The site's own identifier for the tournament." },
+        "name": { "type": "string", "required": true, "doc": "The tournament's name." },
+        "start_date_utc": { "type": "string", "required": true, "doc": "When the tournament started, UTC." },
+        "currency": { "type": "string", "enum": "currency", "required": true, "doc": "The tournament's buy-in currency." },
+        "buyin_amount": { "type": "decimal", "required": true, "doc": "The tournament buy-in amount." },
+        "bounty_fee_amount": { "type": "decimal", "required": true, "doc": "The bounty portion of the fee, for bounty tournaments." },
+        "fee_amount": { "type": "decimal", "required": true, "doc": "The tournament entry fee." },
+        "initial_stack": { "type": "integer", "required": true, "doc": "The starting chip stack for this tournament." },
+        "type": { "type": "string", "required": true, "doc": "The tournament type/format. No enum list confirmed yet (not fully fetched); treat as free-text pending confirmation." },
+        "flags": { "type": "array", "items": "string", "enum": "tournament_flags", "required": false, "doc": "Tournament-level flags. Explicitly nullable/omittable per the spec, see registry enums.json#tournament_flags." },
+        "speed": { "type": "object", "ref": "speed_obj", "required": true, "doc": "The tournament's speed/blind-level settings." }
+      }
+    },
+    "speed_obj": {
+      "doc": "A tournament's speed/blind-level settings. Field list from the spec's index only, not independently fetched/confirmed yet .",
+      "fields": {
+        "type": { "type": "string", "required": true, "doc": "The speed category (e.g. regular/turbo/hyper-turbo). Exact enum values not yet confirmed." },
+        "round_time": { "type": "integer", "required": true, "doc": "The duration of each blind level, in seconds (unit not independently confirmed)." }
+      }
+    },
+    "tournament_bounty_obj": {
+      "doc": "A bounty awarded during the hand, for bounty tournaments.",
+      "fields": {
+        "player_id": { "type": "integer", "required": true, "doc": "The player who collected the bounty." },
+        "bounty_won": { "type": "decimal", "required": true, "doc": "The bounty amount won." },
+        "defeated_player_id": { "type": "integer", "required": true, "doc": "The player who was eliminated to award this bounty." }
+      }
+    },
+    "bet_limit_obj": {
+      "doc": "The hand's betting structure.",
+      "fields": {
+        "bet_type": { "type": "string", "enum": "bet_type", "required": true, "doc": "No Limit / Pot Limit / Fixed Limit. See registry enums.json#bet_type." },
+        "bet_cap": { "type": "decimal", "required": true, "doc": "The maximum bet size, for Cap games (0 when uncapped)." }
+      }
+    }
+  }
+}

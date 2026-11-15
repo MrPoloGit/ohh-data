@@ -1,0 +1,21 @@
+{"ohh": {"spec_version": "1.4.9", "internal_version": "1.0.0", "network_name": "TestNetwork", "site_name": "TestSite", "game_type": "Holdem", "table_name": "Table1", "table_handle": "T1", "table_skin": "Default", "tournament": false, "table_size": 2, "game_number": "2001", "start_date_utc": "2026-01-01T00:00:00", "currency": "USD", "ante_amount": 0, "small_blind_amount": 1, "big_blind_amount": 2, "bet_limit": {"bet_cap": 0, "bet_type": "NL"}, "dealer_seat": 1, "hero_player_id": 0, "flags": ["Run_It_Twice"], "players": [{"id": 0, "seat": 1, "name": "Alice", "starting_stack": 200, "player_bounty": 0}, {"id": 1, "seat": 2, "name": "Bob", "starting_stack": 200, "player_bounty": 0}], "rounds": [
+  {"id": 0, "street": "Preflop", "cards": [], "actions": [
+    {"action_number": 1, "player_id": 0, "action": "Post SB", "amount": 1, "is_allin": false},
+    {"action_number": 2, "player_id": 1, "action": "Post BB", "amount": 2, "is_allin": false},
+    {"action_number": 3, "player_id": 0, "action": "Raise", "amount": 200, "is_allin": true},
+    {"action_number": 4, "player_id": 1, "action": "Call", "amount": 198, "is_allin": true}
+  ]},
+  {"id": 1, "street": "Flop", "cards": ["Ah", "Kd", "2c"], "actions": []},
+  {"id": 2, "street": "Turn", "cards": ["7s"], "actions": []},
+  {"id": 3, "street": "River", "cards": ["9h"], "actions": []},
+  {"id": 4, "street": "Flop", "cards": ["3h", "3d", "3c"], "actions": []},
+  {"id": 5, "street": "Turn", "cards": ["5s"], "actions": []},
+  {"id": 6, "street": "River", "cards": ["6h"], "actions": []},
+  {"id": 7, "street": "Showdown", "actions": [
+    {"action_number": 1, "player_id": 0, "cards": ["Ac", "Kc"], "action": "Shows Cards", "amount": 0, "is_allin": false},
+    {"action_number": 2, "player_id": 1, "cards": ["Qh", "Qd"], "action": "Shows Cards", "amount": 0, "is_allin": false}
+  ]}
+], "pots": [
+  {"number": 0, "amount": 200, "rake": 0, "player_wins": [{"player_id": 0, "win_amount": 200, "cashout_amount": 0, "cashout_fee": 0}]},
+  {"number": 1, "amount": 200, "rake": 0, "player_wins": [{"player_id": 1, "win_amount": 200, "cashout_amount": 0, "cashout_fee": 0}]}
+]}}

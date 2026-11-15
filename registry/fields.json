@@ -1,0 +1,30 @@
+{
+  "_comment": "Top-level fields of the hand object (the value of the root \"ohh\" key). Sourced from https://hh-specs.handhistory.org/json-object/ (spec_version 1.4.9, fetched 2026-11-04). The spec's global rule: 'All fields are required unless otherwise stated in the specification.' Fields below are 'required' unless a stated exception is recorded in notes. Unlike phh-data/registry (cross-checked against vendored PokerKit), this has not been cross-checked against a second, independent OHH implementation, see `ohh-data/registry/README.md` for the honest confidence caveat.",
+  "fields": {
+    "spec_version": { "type": "version_string", "required": true, "doc": "The OHH spec version this hand conforms to, e.g. \"1.4.9\"." },
+    "site_name": { "type": "string", "required": true, "doc": "The poker site/operator that generated this hand history." },
+    "network_name": { "type": "string", "required": true, "doc": "The poker network the site belongs to." },
+    "internal_version": { "type": "version_string", "required": true, "doc": "The generating tool's own version. Independent of spec_version; must increment on any change to the generated file, even bugfixes." },
+    "tournament": { "type": "boolean", "required": false, "doc": "Whether this hand was played in a tournament. Marked optional despite the spec's stated global default (\"required unless otherwise stated\") because the spec's own published example (ohh-data/corpus/valid/holdem-cash-pokerstars.ohh, fetched directly from hh-specs.handhistory.org) omits it entirely for a cash-game hand, found by running ohh-check against that exact fixture, not assumed. Likely means real tools treat this as cash-game-implied-false-when-absent; unconfirmed beyond this one data point." },
+    "tournament_info": { "type": "object", "ref": "tournament_info_obj", "required": false, "doc": "Tournament metadata. Only meaningful when tournament is true. Marked optional for the same empirically-found reason as \"tournament\" above, the real published cash-hand example omits it entirely." },
+    "game_number": { "type": "string", "required": true, "doc": "The site's own identifier for this hand." },
+    "start_date_utc": { "type": "string", "required": true, "doc": "When the hand started, UTC. Format not explicitly specified beyond example \"2021-05-21T07:53:30\" (ISO-8601-looking, no explicit timezone marker, unconfirmed whether a stricter format is required)." },
+    "table_name": { "type": "string", "required": true, "doc": "The name of the table the hand was played at." },
+    "table_handle": { "type": "string", "required": false, "doc": "The site's internal handle/ID for the table. Marked optional despite the spec's stated global default, the real published example omits it entirely, found the same way as \"tournament\" above." },
+    "table_skin": { "type": "string", "required": false, "doc": "The visual skin/brand applied to the table, for sites with multiple skins on one network. Marked optional despite the spec's stated global default, the real published example omits it entirely, found the same way as \"tournament\" above." },
+    "game_type": { "type": "string", "enum": "game_type", "required": true, "doc": "The poker variant played. See registry enums.json#game_type." },
+    "bet_limit": { "type": "object", "ref": "bet_limit_obj", "required": true, "doc": "The betting structure (No Limit / Pot Limit / Fixed Limit, and any bet cap)." },
+    "table_size": { "type": "integer", "required": true, "doc": "The maximum number of seats at the table." },
+    "currency": { "type": "string", "enum": "currency", "required": true, "doc": "ISO 4217 currency code, plus OHH-specific non-ISO extensions (see registry enums.json#currency)." },
+    "dealer_seat": { "type": "integer", "required": true, "doc": "The seat number holding the dealer button for this hand." },
+    "small_blind_amount": { "type": "decimal", "required": true, "doc": "The small blind amount for this hand." },
+    "big_blind_amount": { "type": "decimal", "required": true, "doc": "The big blind amount for this hand." },
+    "ante_amount": { "type": "decimal", "required": true, "doc": "The ante amount for this hand (0 if none)." },
+    "hero_player_id": { "type": "integer", "required": true, "doc": "The player_id of the hero (the player this hand history is written from the perspective of)." },
+    "flags": { "type": "array", "items": "string", "enum": "hand_flags", "required": false, "doc": "Hand-level flags. Explicitly nullable/omittable per the spec, see registry enums.json#hand_flags." },
+    "players": { "type": "array", "items": "object", "ref": "player_obj", "required": true, "doc": "The players seated at the table when the hand was dealt." },
+    "rounds": { "type": "array", "items": "object", "ref": "round_obj", "required": true, "doc": "The betting rounds (streets) of the hand, each with its dealt cards and actions, in play order." },
+    "pots": { "type": "array", "items": "object", "ref": "pot_obj", "required": true, "doc": "The pot(s) awarded at the end of the hand (main pot plus any side pots)." },
+    "tournament_bounties": { "type": "array", "items": "object", "ref": "tournament_bounty_obj", "required": false, "doc": "Bounties awarded during this hand, for bounty tournaments. Requiredness not explicitly stated for non-bounty hands; treated as optional here pending confirmation." }
+  }
+}

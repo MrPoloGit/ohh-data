@@ -1,0 +1,13 @@
+{
+  "_comment": "Card notation. Sourced from https://hh-specs.handhistory.org/string-formats/card.md (spec_version 1.4.9, fetched 2026-11-04).",
+  "format": "rank followed by suit, two characters, e.g. \"As\" (Ace of spades)",
+  "ranks": ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"],
+  "suits": {
+    "h": "Hearts",
+    "s": "Spades",
+    "d": "Diamonds",
+    "c": "Clubs"
+  },
+  "unknown_or_hidden_card_marker": null,
+  "_unknown_marker_note": "UNCONFIRMED, the spec page fetched for card_string gives no placeholder convention for a face-down/unknown/folded-without-showing card (unlike PHH's explicit \"??\"). Do not assume \"??\", a null array entry, or omission from the cards array is correct until checked against a real site-generated .ohh sample with a non-showdown fold. ohh-ls/tree-sitter-ohh must not reject an unanticipated representation here as a syntax error, only the known rank+suit form should be validated strictly; anything else should warn, not error, until this is resolved."
+}
